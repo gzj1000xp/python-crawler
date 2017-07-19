@@ -5,7 +5,9 @@ import re
 import requests
 import os
 import tarfile
+import time
 
+#爬取数据，并保存在position定义的路径
 class Spider:
     def savePageInfo(self, _url, _position, _regX):
 
@@ -30,22 +32,35 @@ class Spider:
             i+=1
 
 
+#压缩文件，保存成tar.gz文件
 def make_targz(output_filename, source_dir):
 	with tarfile.open(output_filename, "w:gz") as tar:
 		tar.add(source_dir, arcname=os.path.basename(source_dir))
 
-start_from_num = 32000
-stop_at_num = 32999
-tar_name = str(start_from_num) + ".tar.gz"
-tar_path = "/home/pyadm/222/jdly" + str(start_from_num) + "/"
-#store_path="/home/pyadm/222/jdly/"
 
-for position_end in range (start_from_num,stop_at_num):
-	url = 'http://www.jdlingyu.moe/' + str(position_end)
-	position = '/home/pyadm/222/jdly32000/' + str(position_end)
-	regX = r'original="(.+?\.jpg)"'
-	spider = Spider()
-	spider.savePageInfo(url, position, regX)
+#定义需要爬取的网站or页面，并定义正则表达式规则
+def down_pic(start_from_num,stop_at_num):
+	for position_end in range (start_from_num,stop_at_num):
+		url = 'http://www.jdlingyu.moe/' + str(position_end)
+		position = '/home/pyadm/jdly/jdly' + str(start_from_num) + '/' + str(position_end)
+		regX = r'original="(.+?\.jpg)"'
+		spider = Spider()
+		spider.savePageInfo(url, position, regX)
 
 
-make_targz(tar_name, tar_path)
+#初始化数据
+start_from_num = 10000
+stop_at_num = 19999
+
+
+#递归执行爬虫，每次爬取1000个num，页面数未知，每间隔10秒执行一次
+for i in range(0,10):
+	print "Start: %s" % time.ctime()
+	down_pic(start_from_num, stop_at_num)
+	tar_name = str(start_from_num) + ".tar.gz"
+	tar_path = "/home/pyadm/jdly/jdly" + str(start_from_num) + "/"
+	start_from_num += 1000
+	stop_at_num += 1000
+	make_targz(tar_name, tar_path)
+	time.sleep(10)
+	print "End: %s" % time.ctime()
