@@ -22,13 +22,13 @@ class Spider:
             if not os.path.isdir(position):
                 os.makedirs(position)
 
-            fp = open( position+str(i)+'.jpg', 'wb' )
+            fp = open( position+'/'+str(i)+'.jpg', 'wb' )
             fp.write(pic.content)
             print position+each
             fp.close()
             i+=1
 
-for position_end in range (33380,33390):
+for position_end in range (33000,33999):
 	url = 'http://www.jdlingyu.moe/' + position_end
 	position = '/home/pyadm/222/jdly/' + position_end
 	regX = r'original="(.+?\.jpg)"'
