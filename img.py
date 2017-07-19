@@ -50,10 +50,10 @@ def down_pic(start_from_num,stop_at_num):
 
 #初始化数据
 start_from_num = 10000
-stop_at_num = 19999
+stop_at_num = 10999
 
 
-#递归执行爬虫，每次爬取1000个num，页面数未知，每间隔10秒执行一次
+#递归执行爬虫，每次爬取1000个num，页面数未知，每间隔一分钟执行一次
 for i in range(0,10):
 	print "Start: %s" % time.ctime()
 	down_pic(start_from_num, stop_at_num)
@@ -62,5 +62,5 @@ for i in range(0,10):
 	start_from_num += 1000
 	stop_at_num += 1000
 	make_targz(tar_name, tar_path)
-	time.sleep(10)
+	time.sleep(60)
 	print "End: %s" % time.ctime()
