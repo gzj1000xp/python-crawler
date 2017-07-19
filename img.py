@@ -18,11 +18,8 @@ class Spider:
 
         i = 0
         for each in pic_url:
-
             pic = requests.get( each )
-            #print  url + each
             if not os.path.isdir(position):
-
                 os.makedirs(position)
 
             fp = open( position+str(i)+'.jpg', 'wb' )
@@ -31,15 +28,9 @@ class Spider:
             fp.close()
             i+=1
 
-
-
-position_end = ''
-
-url = 'http://www.jdlingyu.moe/33388' + position_end
-
-position = '/home/pyadm/222/jdly/' + position_end
-
-regX = r'original="(.+?\.jpg)"'
-
-spider = Spider()
-spider.savePageInfo(url, position, regX)
+for position_end in range (33380,33390):
+	url = 'http://www.jdlingyu.moe/' + position_end
+	position = '/home/pyadm/222/jdly/' + position_end
+	regX = r'original="(.+?\.jpg)"'
+	spider = Spider()
+	spider.savePageInfo(url, position, regX)
