@@ -30,7 +30,7 @@ class Spider:
 
                 fp = open(position + position_end + str(i).decode('utf-8') + '.jpg', 'wb')
             fp.write(pic.content)
-            print position+each
+            print each[-15:]
             fp.close()
             i+=1
 
