@@ -1,5 +1,6 @@
 #!/usr/bin/python
 # coding=utf-8
+#encoding=utf-8
 #-*-coding:UTF-8-*-
 
 import re
@@ -14,7 +15,7 @@ class Spider:
 
         url = _url
         position = _position
-        position_end = str(_position_end)
+        position_end = str(_position_end).decode('utf-8')
         html = requests.get(url).text
 
         regX = _regX
@@ -27,7 +28,7 @@ class Spider:
             if not os.path.isdir(position):
                 os.makedirs(position)
 
-                fp = open(position + position_end + str(i) + '.jpg', 'wb')
+                fp = open(position + position_end + str(i).decode('utf-8') + '.jpg', 'wb')
             fp.write(pic.content)
             print position+each
             fp.close()
@@ -43,8 +44,8 @@ def make_targz(output_filename, source_dir):
 # 定义需要爬取的网站or页面，并定义正则表达式规则
 def down_pic(start_from_num,stop_at_num):
     for position_end in range (start_from_num,stop_at_num):
-        url = 'http://www.jdlingyu.moe/' + str(position_end)
-        position = '/home/pyadm/jdly/jdly' + str(start_from_num) + '/' + str(position_end)
+        url = 'http://www.jdlingyu.moe/' + str(position_end).decode('utf-8')
+        position = '/home/pyadm/jdly/jdly' + str(start_from_num).decode('utf-8') + '/'
         regX = r'original="(.+?\.jpg)"'
         spider = Spider()
         spider.savePageInfo(url, position, regX, position_end)
@@ -59,8 +60,8 @@ stop_at_num = 10999
 for i in range(0,10):
     print "Start: %s" % time.ctime()
     down_pic(start_from_num, stop_at_num)
-    tar_name = str(start_from_num) + ".tar.gz"
-    tar_path = "/home/pyadm/jdly/jdly" + str(start_from_num) + "/"
+    tar_name = str(start_from_num).decode('utf-8') + ".tar.gz"
+    tar_path = "/home/pyadm/jdly/jdly" + str(start_from_num).decode('utf-8') + "/"
     start_from_num += 1000
     stop_at_num += 1000
     make_targz(tar_name, tar_path)
