@@ -7,7 +7,7 @@ import os
 import tarfile
 import time
 
-#ÅÀÈ¡Êı¾İ£¬²¢±£´æÔÚposition¶¨ÒåµÄÂ·¾¶
+#çˆ¬å–æ•°æ®ï¼Œå¹¶ä¿å­˜åœ¨positionå®šä¹‰çš„è·¯å¾„
 class Spider:
     def savePageInfo(self, _url, _position, _regX):
 
@@ -32,13 +32,13 @@ class Spider:
             i+=1
 
 
-#Ñ¹ËõÎÄ¼ş£¬±£´æ³Étar.gzÎÄ¼ş
+#å‹ç¼©æ–‡ä»¶ï¼Œä¿å­˜æˆtar.gzæ–‡ä»¶
 def make_targz(output_filename, source_dir):
 	with tarfile.open(output_filename, "w:gz") as tar:
 		tar.add(source_dir, arcname=os.path.basename(source_dir))
 
 
-#¶¨ÒåĞèÒªÅÀÈ¡µÄÍøÕ¾orÒ³Ãæ£¬²¢¶¨ÒåÕıÔò±í´ïÊ½¹æÔò
+#å®šä¹‰éœ€è¦çˆ¬å–çš„ç½‘ç«™oré¡µé¢ï¼Œå¹¶å®šä¹‰æ­£åˆ™è¡¨è¾¾å¼è§„åˆ™
 def down_pic(start_from_num,stop_at_num):
 	for position_end in range (start_from_num,stop_at_num):
 		url = 'http://www.jdlingyu.moe/' + str(position_end)
@@ -48,12 +48,12 @@ def down_pic(start_from_num,stop_at_num):
 		spider.savePageInfo(url, position, regX)
 
 
-#³õÊ¼»¯Êı¾İ
+#åˆå§‹åŒ–æ•°æ®
 start_from_num = 10000
 stop_at_num = 10999
 
 
-#µİ¹éÖ´ĞĞÅÀ³æ£¬Ã¿´ÎÅÀÈ¡1000¸önum£¬Ò³ÃæÊıÎ´Öª£¬Ã¿¼ä¸ôÒ»·ÖÖÓÖ´ĞĞÒ»´Î
+#é€’å½’æ‰§è¡Œçˆ¬è™«ï¼Œæ¯æ¬¡çˆ¬å–1000ä¸ªnumï¼Œé¡µé¢æ•°æœªçŸ¥ï¼Œæ¯é—´éš”ä¸€åˆ†é’Ÿæ‰§è¡Œä¸€æ¬¡
 for i in range(0,10):
 	print "Start: %s" % time.ctime()
 	down_pic(start_from_num, stop_at_num)
