@@ -23,13 +23,13 @@ def downpic(img_src, answerid, picname):
         os.makedirs("zhihu\%s_image" % answerid)
     filename = CurrentPath + u"\\zhihu\%s_image\%s.jpg" % (answerid, picname)
     picnum = picnum + 1
-    print "-----------------"
-    print img_src
-    print filename
-    print u'下完了%s张' % picnum
-    print "-----------------"
+    print( "-----------------")
+    print( img_src)
+    print( filename)
+    print( u'下完了%s张' % picnum)
+    print( "-----------------")
     try:
-        urllib.urlretrieve(img_src, filename)
+        urllib.request.urlretrieve(img_src, filename)
     except Exception:
         print(u'这张图片下载出问题了： %s' % filename)
 

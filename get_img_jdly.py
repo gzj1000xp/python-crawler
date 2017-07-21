@@ -30,7 +30,7 @@ class Spider:
 
                 fp = open(position + position_end + str(i).decode('utf-8') + '.jpg', 'wb')
             fp.write(pic.content)
-            print each[-15:]
+            print (each[-15:])
             fp.close()
             i+=1
 
@@ -58,7 +58,7 @@ stop_at_num = 10999
 
 # 递归执行爬虫，每次爬取1000个num，页面数未知，每间隔一分钟执行一次
 for i in range(0,10):
-    print "Start: %s" % time.ctime()
+    print ("Start: %s" % time.ctime())
     down_pic(start_from_num, stop_at_num)
     tar_name = str(start_from_num).decode('utf-8') + ".tar.gz"
     tar_path = "/home/pyadm/jdly/jdly" + str(start_from_num).decode('utf-8') + "/"
@@ -66,4 +66,4 @@ for i in range(0,10):
     stop_at_num += 1000
     make_targz(tar_name, tar_path)
     time.sleep(60)
-    print "End: %s" % time.ctime()
+    print ("End: %s" % time.ctime())
