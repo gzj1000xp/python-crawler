@@ -8,14 +8,25 @@ import os
 import requests
 
 
-def getpage(questionid, answer_id, wrongtry=0, leastlink=""):
-    pageurl = u"https://www.zhihu.com/question/%s/answer/%s" % (questionid, answer_id)  # 获取页面地址
+def getpage(questionid,  wrongtry=0, leastlink=""):
+    pageurl = u"https://www.zhihu.com/question/%s" % (questionid)  # 获取页面地址
     print pageurl
     session = requests.session()
     html = session.get(pageurl, headers=headers)
     # 返回网页内容
     soup = BeautifulSoup(html.content, "html.parser")
     print soup
+
+    # get answerid
+    for aid in soup.find_all('div', class_='ContentItem AnswerItem'):
+        ansid = aid.get('name')
+        print ansid
+
+    # get answerid
+    for aid in soup.find_all('div', class_='ContentItem AnswerItem'):
+        ansid = aid.get('name')
+        print ansid
+
     # 解析网页
     for asrc in soup.find_all('noscript'):
         pageurl = asrc.find('img').get('data-original')
@@ -67,7 +78,7 @@ def downpic(pagelink, nameid):
 if __name__ == '__main__':
     page = 0
     question_id = "39752484"
-    answer_id = "201250070"
+    #answer_id = "201250070"
 '''
     if not os.path.exists("bcy/%s_image" % member_id):
         os.makedirs("bcy/%s_image" % member_id)
@@ -81,4 +92,4 @@ headers = {'User-Agent': user_agent, 'Referer': 'http://bcy.net'}
 pagenum = 0
 picnum = 0
 # 准备计次变量
-getpage(question_id, answer_id)
+getpage(question_id)
