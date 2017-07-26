@@ -8,7 +8,7 @@ import requests
 
 
 def getpage(nameid, pageid=1, wrongtry=0, leastlink=""):
-    pageurl = u"http://bcy.net/u/%s/post/cos?p=%d" % (nameid, pageid)  # 获取页面地址
+    pageurl = u"http://www.pixiv.net/member.php?id=%s" % (nameid)  # 获取页面地址
     print(pageurl)
     session = requests.session()
     html = session.get(pageurl, headers=headers)
@@ -20,7 +20,7 @@ def getpage(nameid, pageid=1, wrongtry=0, leastlink=""):
         a_src = asrc.find('a').get('href')
         pageurl = "http://bcy.net/" + a_src
         print (pageurl)
-        downpic(pageurl, nameid)
+        #downpic(pageurl, nameid)
     if not pageurl == leastlink:
         pageid += 1
         leastlink = pageurl
@@ -64,7 +64,7 @@ def downpic(pagelink, nameid):
 # 程序入口
 if __name__ == '__main__':
     page = 0
-    member_id = "1036063"
+    member_id = "14046928"
     if not os.path.exists("bcy/%s_image" % member_id):
         os.makedirs("bcy/%s_image" % member_id)
         print("创建目录")
