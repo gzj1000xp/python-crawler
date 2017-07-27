@@ -61,7 +61,7 @@ def getpage(memberid, pageid, login_session, leastlink=""):
     if not pageurl == leastlink:
         pageid += 1
         leastlink = pageurl
-        getpage(memberid, pageid, leastlink)
+        getpage(memberid, pageid, login_session, leastlink)
     else:
         pageid = pageid - 1
         print("共爬到%d页" % pageid)
@@ -109,4 +109,5 @@ login_headers = {
     "Connection": "keep-alive"
 }
 login_session = login(username, password)
-getpage(member_id, 1, login_session)
+print(login_session)
+getpage(member_id, 3, login_session)
