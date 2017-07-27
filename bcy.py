@@ -5,6 +5,7 @@ import re
 from bs4 import BeautifulSoup
 import os
 import requests
+import time
 
 
 def getpage(nameid, pageid=1, wrongtry=0, leastlink=""):
@@ -57,6 +58,7 @@ def downpic(pagelink, nameid):
         print( "-----------------")
         try:
             urllib.request.urlretrieve(img_src, filename)
+            time.sleep(0.5)
         except Exception:
             print(u'这张图片下载出问题了： %s' % filename)
 

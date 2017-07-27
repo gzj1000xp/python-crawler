@@ -3,6 +3,7 @@ import urllib
 from bs4 import BeautifulSoup
 import os
 import requests
+import time
 
 # 解析网页，得到图片的URL，调用下载模块
 def getpage(questionid, answerid):
@@ -30,6 +31,7 @@ def downpic(img_src, answerid, picname):
     print( "-----------------")
     try:
         urllib.request.urlretrieve(img_src, filename)
+        time.sleep(1)
     except Exception:
         print(u'这张图片下载出问题了： %s' % filename)
 
