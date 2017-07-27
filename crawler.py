@@ -1,10 +1,10 @@
 import re
-import urlparse
-import urllib2
+import urlparse3
+import urllib3
 import time
 from datetime import datetime
-import robotparser
-import Queue
+#import robotparser
+#import Queue
 import lxml.html
 import csv
 
@@ -55,7 +55,7 @@ def link_crawler(seed_url, link_regex=None, delay=5, max_depth=-1, max_urls=-1, 
             if num_urls == max_urls:
                 break
         else:
-            print 'Blocked by robots.txt:', url
+            print ('Blocked by robots.txt:', url)
 
 
 class Throttle:
@@ -69,7 +69,7 @@ class Throttle:
         self.domains = {}
 
     def wait(self, url):
-        domain = urlparse.urlparse(url).netloc
+        domain = urlparse3.urlparse(url).netloc
         last_accessed = self.domains.get(domain)
 
         if self.delay > 0 and last_accessed is not None:
@@ -80,18 +80,18 @@ class Throttle:
 
 
 def download(url, headers, proxy, num_retries, data=None):
-    print 'Downloading:', url
-    request = urllib2.Request(url, data, headers)
-    opener = urllib2.build_opener()
+    print ('Downloading:', url)
+    request = urllib3.Request(url, data, headers)
+    opener = urllib3.build_opener()
     if proxy:
-        proxy_params = {urlparse.urlparse(url).scheme: proxy}
-        opener.add_handler(urllib2.ProxyHandler(proxy_params))
+        proxy_params = {urlparse3.urlparse(url).scheme: proxy}
+        opener.add_handler(urllib3.ProxyHandler(proxy_params))
     try:
         response = opener.open(request)
         html = response.read()
         code = response.code
-    except urllib2.URLError as e:
-        print 'Download error:', e.reason
+    except urllib3.URLError as e:
+        print ('Download error:', e.reason)
         html = ''
         if hasattr(e, 'code'):
             code = e.code
@@ -106,21 +106,21 @@ def download(url, headers, proxy, num_retries, data=None):
 def normalize(seed_url, link):
     """Normalize this URL by removing hash and adding domain
     """
-    link, _ = urlparse.urldefrag(link)  # remove hash to avoid duplicates
-    return urlparse.urljoin(seed_url, link)
+    link, _ = urlparse3.urldefrag(link)  # remove hash to avoid duplicates
+    return urlparse3.urljoin(seed_url, link)
 
 
 def same_domain(url1, url2):
     """Return True if both URL's belong to same domain
     """
-    return urlparse.urlparse(url1).netloc == urlparse.urlparse(url2).netloc
+    return urlparse3.urlparse(url1).netloc == urlparse3.urlparse(url2).netloc
 
 
 def get_robots(url):
     """Initialize robots parser for this domain
     """
     rp = robotparser.RobotFileParser()
-    rp.set_url(urlparse.urljoin(url, '/robots.txt'))
+    rp.set_url(urlparse3.urljoin(url, '/robots.txt'))
     rp.read()
     return rp
 
