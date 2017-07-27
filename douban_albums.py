@@ -112,7 +112,7 @@ def downpic(img_src, album_name, picname):
     print( u'下完了%s张' % picnum)
     print( "-----------------")
 
-    if not filename:
+    if not os.path.isfile(filename):
         try:
             urllib.request.urlretrieve(img_src, filename)
             time.sleep(0.5)
