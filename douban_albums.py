@@ -5,9 +5,22 @@ import os
 import requests
 import re
 import time
+import json
+import random
+
+# 配置爬虫代理
+def getproxy(ip_pool_url):
+    ip_url = requests.get(ip_pool_url)
+    ip_url_bs = BeautifulSoup(ip_url.content, "html.parser")
+    ip_list = json.loads(str(ip_url_bs))
+    proxy_ip = random.choice(ip_list)[0]
+    proxy_port = random.choice(ip_list)[1]
+    proxy_add = "http://" + proxy_ip + ":" + str(proxy_port)
+    print(proxy_add)
+    return proxy_add
 
 
-def login(username, password):
+def login(username, password, proxy_address):
     login_str = u'登录'
     data = {
         'source':'None',
@@ -24,7 +37,7 @@ def login(username, password):
         captcha_image_url = captcha_image_url.group()
         print(captcha_image_url)
         # captcha_image = session.get(captcha_image_url).text
-        captcha_image = requests.get(captcha_image_url, headers=headers).content
+        captcha_image = requests.get(captcha_image_url, headers=headers, proxies={'http': proxy_address}).content
         document = 'login_captcha_douban.jpg'
         file_ = open(document, 'wb')
         file_.write(captcha_image)
@@ -39,17 +52,17 @@ def login(username, password):
         else:
             captcha_id = captcha_id.group()
             data['captcha-id'] = captcha_id
-    session.post(login_url, headers=headers, data=data)
+    session.post(login_url, headers=headers, data=data, proxies={'http': proxy_address})
     print(data)
     print(session.cookies.items())
     return session
 
 # 解析网页，得到相册列表
-def getalbum(memberid, pageid, login_session):
+def getalbum(memberid, pageid, login_session, proxy_address):
     pageurl = u"https://www.douban.com/people/%s/photos?start=%d" % (memberid, pageid)  # 获取页面地址
     #print(pageurl)
     # session = requests.session()
-    html = login_session.get(pageurl, headers=headers)
+    html = login_session.get(pageurl, headers=headers,proxies={'http': proxy_address})
     # print(html)
     # 返回网页内容
     soup = BeautifulSoup(html.content, "html.parser")
@@ -114,6 +127,9 @@ def downpic(img_src, album_name, picname):
 
     if not os.path.isfile(filename):
         try:
+            proxy = urllib.request.ProxyHandler({'http': proxy_address})
+            opener = urllib.request.build_opener(proxy)
+            urllib.request.install_opener(opener)
             urllib.request.urlretrieve(img_src, filename)
             time.sleep(0.5)
         except Exception:
@@ -121,9 +137,8 @@ def downpic(img_src, album_name, picname):
 
 
 # 程序入口
-if __name__ == '__main__':
-    page = 0
-    member_id = "tiffanyscode"
+page = 0
+member_id = "62054075"
     #answer_id = "201250070"
 user_agent = 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.101 Safari/537.36'
 headers = {'User-Agent': user_agent, 'Referer': 'http://douban.com'}
@@ -134,6 +149,8 @@ picnum = 0
 
 username = 'yixi1993@hotmail.com'
 password = 'woshigzj'
+ip_pool_url = "http://60.205.220.209:8000/?types=0&count=50&country=国内"
+proxy_address = getproxy(ip_pool_url)
 
 login_headers = {
     "Host": "www.douban.com",
@@ -142,7 +159,7 @@ login_headers = {
     "Accept-Encoding": "gzip, deflate, sdch, br",
     "Connection": "keep-alive"
 }
-login_session = login(username, password)
-print(login_session)
-getalbum(member_id, 0, login_session)
+login_session = login(username, password,proxy_address)
+#print(login_session)
+getalbum(member_id, 0, login_session, proxy_address)
 #getpage(member_id, 3, login_session)

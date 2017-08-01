@@ -137,5 +137,5 @@ headers = {
     "Connection": "keep-alive"
 }
 login_session = login(username, password, proxy_address)
-getpage(member_id, 1, login_session, proxy_address)
+getpage(member_id, 10, login_session, proxy_address)
 
