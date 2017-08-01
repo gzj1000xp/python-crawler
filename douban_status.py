@@ -16,7 +16,8 @@ def getproxy(ip_pool_url):
     ip_list = json.loads(str(ip_url_bs))
     proxy_ip = random.choice(ip_list)[0]
     proxy_port = random.choice(ip_list)[1]
-    proxy_add = proxy_ip + ":" + str(proxy_port)
+    proxy_add = "http://" + proxy_ip + ":" + str(proxy_port)
+    print(proxy_add)
     return proxy_add
 
 # 登录函数
@@ -30,14 +31,14 @@ def login(username, password, proxy_address):
     }
     login_url = 'https://www.douban.com/accounts/login'
     session = requests.session()
-    html = session.get(login_url, headers=headers, proxies=proxy_address).text
+    html = session.get(login_url, headers=headers, proxies={'http': proxy_address}).text
     captcha_img_pattern = r'(?<=<img id="captcha_image" src=\").*?(?=\")'
     captcha_image_url = re.search(captcha_img_pattern,html,re.S|re.M|re.I)
     if captcha_image_url is not None:
         captcha_image_url = captcha_image_url.group()
         print(captcha_image_url)
         # captcha_image = session.get(captcha_image_url).text
-        captcha_image = requests.get(captcha_image_url, headers=headers, proxies=proxy_address).content
+        captcha_image = requests.get(captcha_image_url, headers=headers, proxies={'http': proxy_address}).content
         document = 'login_captcha_douban.jpg'
         file_ = open(document, 'wb')
         file_.write(captcha_image)
@@ -52,30 +53,31 @@ def login(username, password, proxy_address):
         else:
             captcha_id = captcha_id.group()
             data['captcha-id'] = captcha_id
-    session.post(login_url, headers=headers, data=data, proxies=proxy_address)
+    session.post(login_url, headers=headers, data=data, proxies={'http': proxy_address})
     print(data)
     print(session.cookies.items())
     return session
 
 # 解析网页，得到图片的URL，调用下载模块 need to login.
-def getpage(memberid, pageid, login_session, proxy_address, leastlink=""):
+def getpage(memberid, pageid, login_session, proxy_address):
     pageurl = u"https://www.douban.com/people/%s/statuses?p=%d" % (memberid, pageid)  # 获取页面地址
     print(pageurl)
     #session = requests.session()
-    html = login_session.get(pageurl, headers=headers, proxies=proxy_address)
+    html = login_session.get(pageurl, headers=headers, proxies={'http': proxy_address})
     #print(html)
     # 返回网页内容
     soup = BeautifulSoup(html.content, "html.parser")
-    print(soup)
+    #print(soup)
     #print(soup.find_all('a', class_="view-large"))
     for asrc in soup.find_all('a', class_="view-large"):
         pageurl = asrc.get('href')
         picname=pageurl.split('/')[-1]
         downpic(pageurl, memberid, picname)
-    if not pageurl == leastlink:
+    if pageid <= 10:
         pageid += 1
-        leastlink = pageurl
-        getpage(memberid, pageid, login_session, proxy_address, leastlink)
+        print(pageid)
+        #leastlink = pageurl
+        getpage(memberid, pageid, login_session, proxy_address)
     else:
         pageid = pageid - 1
         print("共爬到%d页" % pageid)
@@ -93,18 +95,28 @@ def downpic(img_src, memberid, picname):
     print( filename)
     print( u'下完了%s张' % picnum)
     print( "-----------------")
-    
+
+    #requests.get(img_src, filename, proxies={'http': proxy_address})
+    proxy = urllib.request.ProxyHandler({'http': proxy_address})
+    opener = urllib.request.build_opener(proxy)
+    urllib.request.install_opener(opener)
+    urllib.request.urlretrieve(img_src,filename)
+
+    #urllib.request.urlretrieve(img_src, filename, proxies={'http': proxy_address})
+    time.sleep(1)
+
+'''  
     if not os.path.isfile(filename):
         try:
-            urllib.request.urlretrieve(img_src, filename, proxies=proxy_address)
+            urllib.request.urlretrieve(img_src, filename, proxies={'http': proxy_address})
             time.sleep(1)
         except Exception:
             print(u'这张图片下载出问题了： %s' % filename)
-
+'''
 # 程序入口
-if __name__ == '__main__':
-    page = 0
-    member_id = "91886435"
+
+page = 0
+member_id = "91886435"
 #user_agent = 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.101 Safari/537.36'
 #headers = {'User-Agent': user_agent, 'Referer': 'http://douban.com'}
 # 准备headers
@@ -114,7 +126,7 @@ picnum = 0
 
 username = 'yixi1993@hotmail.com'
 password = 'woshigzj'
-ip_pool_url = "http://127.0.0.1:8000/?types=0&count=50&country=国内"
+ip_pool_url = "http://60.205.220.209:8000/?types=0&count=50&country=国内"
 proxy_address = getproxy(ip_pool_url)
 
 headers = {
@@ -125,5 +137,5 @@ headers = {
     "Connection": "keep-alive"
 }
 login_session = login(username, password, proxy_address)
-getpage(member_id, 0, login_session, proxy_address)
+getpage(member_id, 1, login_session, proxy_address)
 
