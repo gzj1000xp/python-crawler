@@ -72,7 +72,8 @@ def getpage(memberid, pageid, login_session, proxy_address):
     for asrc in soup.find_all('a', class_="view-large"):
         pageurl = asrc.get('href')
         picname=pageurl.split('/')[-1]
-        downpic(pageurl, memberid, picname)
+        if pageurl is not None:
+            downpic(pageurl, memberid, picname)
     if pageid <= 10:
         pageid += 1
         print(pageid)

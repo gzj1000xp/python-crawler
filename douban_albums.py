@@ -21,7 +21,7 @@ def getproxy(ip_pool_url):
 
 
 def login(username, password, proxy_address):
-    login_str = u'登录'
+    login_str = u'login'
     data = {
         'source':'None',
         'form_email': username,
@@ -107,7 +107,8 @@ def getphoto(pageurl, login_session, album_name):
        if "view" in photourl:
            #print(photourl)
            picname = photourl.split('/')[-1]
-           downpic(photourl, album_name, picname)
+           if photourl is not None:
+                downpic(photourl, album_name, picname)
 
 # 下载图片
 def downpic(img_src, album_name, picname):
@@ -122,7 +123,7 @@ def downpic(img_src, album_name, picname):
     print( "-----------------")
     print( img_src)
     print( filename)
-    print( u'下完了%s张' % picnum)
+    print( u'Downloaded %s pics' % picnum)
     print( "-----------------")
 
     if not os.path.isfile(filename):
@@ -133,7 +134,7 @@ def downpic(img_src, album_name, picname):
             urllib.request.urlretrieve(img_src, filename)
             time.sleep(0.5)
         except Exception:
-            print(u'这张图片下载出问题了： %s' % filename)
+            print(u'Error occured during downloading： %s' % filename)
 
 
 # 程序入口
